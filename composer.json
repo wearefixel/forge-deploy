@@ -1,0 +1,22 @@
+{
+    "name": "fixel/forge-deploy",
+    "autoload": {
+        "psr-4": {
+            "Fixel\\ForgeDeploy\\": "src"
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Forge Deploy",
+            "description": "Forge Deploy addon"
+        },
+        "laravel": {
+            "providers": [
+                "Fixel\\ForgeDeploy\\ServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "gitonomy/gitlib": "^1.3"
+    }
+}
