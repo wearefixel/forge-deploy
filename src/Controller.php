@@ -5,7 +5,9 @@ namespace Fixel\ForgeDeploy;
 use Gitonomy\Git\Commit;
 use Gitonomy\Git\Diff\File;
 use Gitonomy\Git\Repository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Statamic\Http\Controllers\Controller as StatamicController;
@@ -19,7 +21,7 @@ class Controller extends StatamicController
         $this->git = new Repository(base_path());
     }
 
-    public function last(Request $request)
+    public function last(Request $request): Collection
     {
         return collect(config('forge-deploy.environments'))
             ->mapWithKeys(function ($environment, $name) {
@@ -33,7 +35,7 @@ class Controller extends StatamicController
             });
     }
 
-    public function commits(Request $request)
+    public function commits(Request $request): array
     {
         $repository = new Repository(base_path());
 
@@ -58,7 +60,7 @@ class Controller extends StatamicController
         ];
     }
 
-    public function commit(Request $request, string $hash)
+    public function commit(Request $request, string $hash): Collection
     {
         $repository = new Repository(base_path());
 
@@ -70,7 +72,7 @@ class Controller extends StatamicController
         ]);
     }
 
-    public function deploy(Request $request, string $environment, string $hash)
+    public function deploy(Request $request, string $environment, string $hash): JsonResponse
     {
         if (!$this->getEnvironment($environment)) {
             return response()->json([
@@ -120,7 +122,7 @@ class Controller extends StatamicController
         );
     }
 
-    protected function getEnvironment(string $environment): array|null
+    protected function getEnvironment(string $environment): ?array
     {
         return config('forge-deploy.environments.' . $environment);
     }

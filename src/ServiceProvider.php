@@ -12,7 +12,7 @@ class ServiceProvider extends AddonServiceProvider
         __DIR__ . '/../resources/dist/js/cp.js',
     ];
 
-    public function bootAddon()
+    public function bootAddon(): void
     {
         $this->registerCpRoutes(function () {
             Route::prefix('fixel/forge-deploy')
