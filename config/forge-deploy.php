@@ -7,8 +7,8 @@ return [
     'environments' => [
 
         // 'staging' => [
-        //     'server' => env('FORGE_DEPLOY_STAGING_SERVER'),
-        //     'site' => env('FORGE_DEPLOY_STAGING_SITE'),
+        //     'server_id' => env('FORGE_DEPLOY_STAGING_SERVER_ID'),
+        //     'site_id' => env('FORGE_DEPLOY_STAGING_SITE_ID'),
         //     'token' => env('FORGE_DEPLOY_STAGING_TOKEN'),
         // ],
 
