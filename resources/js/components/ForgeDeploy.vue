@@ -5,7 +5,7 @@
       <ul>
         <li class="mt-1" v-for="(env, key) in last" v-bind:key="key">
           <strong class="titlecase">{{ key }}:</strong>
-          <code>{{ env ? env.hash.slice(0, 7) : "n/a" }}</code>
+          <code>{{ env ? env.hash.slice(0, 8) : "n/a" }}</code>
           <span v-if="env">{{
             new Date(env.time * 1000).toLocaleString()
           }}</span>
@@ -35,12 +35,9 @@
             <span>{{ commit.message }}</span>
           </button>
 
-          <div
-            class="mt-4 space-y-4"
-            v-if="selectedCommit && selectedCommit.hash === commit.hash"
-          >
+          <div v-if="selectedCommit && selectedCommit.hash === commit.hash">
             <ul
-              class="p-4 rounded text-sm font-mono bg-gray-300 text-gray-700"
+              class="mt-4 p-4 rounded text-sm font-mono bg-gray-300 text-gray-700"
               style="white-space: nowrap"
             >
               <li
@@ -51,7 +48,7 @@
               </li>
             </ul>
 
-            <div class="flex gap-1">
+            <div class="mt-4 flex gap-1">
               <button
                 v-for="env in environments"
                 v-bind:key="env"
