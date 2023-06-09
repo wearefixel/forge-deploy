@@ -1,23 +1,14 @@
 # Forge Deploy
 
-> Forge Deploy is a Statamic addon that does something pretty neat.
+Provides a deployment utility in the Statamic control panel to view a list of Git commits and deploy specific commits to Laravel Forge.
 
-## Features
+## Instructions
 
-This addon does:
-
-- This
-- And this
-- And even this
-
-## How to Install
-
-You can search for this addon in the `Tools > Addons` section of the Statamic control panel and click **install**, or run the following command from your project root:
-
-``` bash
-composer require fixel/forge-deploy
+1. `composer require fixel/forge-deploy`
+2. Publish `forge-deploy-config` via `php artisan vendor:publish`
+3. Provide your Forge site's server ID, site ID, and deployment token via `.env` variables or config directly
+4. Update Git portion of Forge deployment script to something like this:
+```bash
+git fetch origin
+git checkout $FORGE_VAR_HASH
 ```
-
-## How to Use
-
-Here's where you can explain how to use this wonderful addon.
