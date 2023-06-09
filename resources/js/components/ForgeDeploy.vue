@@ -1,6 +1,6 @@
 <template>
   <div class="text-sm">
-    <div class="border-b pb-2 -mx-2 px-2">
+    <div class="pb-4 -mx-4 px-4">
       <h2>Last Deployment</h2>
       <ul>
         <li class="mt-1" v-for="(env, key) in last" v-bind:key="key">
@@ -13,20 +13,20 @@
       </ul>
     </div>
 
-    <div class="-mx-2 px-2">
-      <div class="text-center pt-4 pb-2" v-if="loadingCommits">
+    <div class="-mx-4 px-4">
+      <div class="text-center pt-4 pb-4" v-if="loadingCommits">
         <loading-graphic />
       </div>
 
-      <ul class="divide-y" v-if="commits.length && !loadingCommits">
+      <ul v-if="commits.length && !loadingCommits">
         <li
-          class="py-2"
+          class="py-4 border-t"
           v-for="commit in commits"
           v-bind:key="commit.shortHash"
         >
           <button
             type="button"
-            class="w-full hover:text-blue duration-100 text-left space-x-1"
+            class="w-full hover:text-blue duration-100 text-left space-x-2"
             style="outline: none !important"
             @click="selectCommit(commit.hash)"
           >
@@ -36,11 +36,11 @@
           </button>
 
           <div
-            class="mt-2 space-y-2"
+            class="mt-4 space-y-4"
             v-if="selectedCommit && selectedCommit.hash === commit.hash"
           >
             <ul
-              class="p-2 rounded text-sm font-mono bg-grey-30 text-grey-70 overflow-auto"
+              class="p-4 rounded text-sm font-mono bg-gray-300 text-gray-700"
               style="white-space: nowrap"
             >
               <li
@@ -67,7 +67,7 @@
       </ul>
 
       <div
-        class="flex justify-between items-center mt-2"
+        class="flex justify-between items-center mt-4"
         v-if="!loadingCommits"
       >
         <button type="button" class="btn" @click="prev" :disabled="page === 0">
