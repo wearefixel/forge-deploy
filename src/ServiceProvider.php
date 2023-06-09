@@ -39,7 +39,7 @@ class ServiceProvider extends AddonServiceProvider
             Utility::register('forge-deploy')
                 ->view('forge-deploy::ui')
                 ->title('Forge Deploy')
-                ->icon('upload');
+                ->icon('sites');
         });
     }
 }
