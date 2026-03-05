@@ -1,5 +1,5 @@
-import ForgeDeploy from './components/ForgeDeploy.vue'
+import Index from "./pages/Index.vue";
 
 Statamic.booting(() => {
-    Statamic.$components.register('forge-deploy', ForgeDeploy)
-})
+  Statamic.$inertia.register("forge-deploy::index", Index);
+});
