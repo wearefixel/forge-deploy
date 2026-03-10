@@ -13,7 +13,7 @@ use Inertia\Inertia;
 use Statamic\Http\Controllers\Controller as StatamicController;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Fixel\ForgeDeploy\CommitResource;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
 use Exception;
 
 class Controller extends StatamicController
@@ -41,7 +41,7 @@ class Controller extends StatamicController
         ]);
     }
 
-    public function commits(Request $request): AnonymousResourceCollection
+    public function commits(Request $request): JsonResponse
     {
         $perPage = (int) $request->input('perPage', 15);
         $page = (int) $request->query('page', 1);
@@ -49,7 +49,39 @@ class Controller extends StatamicController
         $total = $this->git->getLog()->countCommits();
         $paginator = new LengthAwarePaginator($commits, $total, $perPage, $page, ['path' => $request->url()]);
 
-        return CommitResource::collection($paginator);
+        $columnLabels = [
+            'shortHash' => 'Commit',
+            'message' => 'Message',
+            'author' => 'Author',
+            'actions' => '',
+        ];
+
+        $columns = collect($request->input('columns', 'shortHash,message,author,actions'))
+            ->pipe(fn ($c) => is_string($c->first()) ? str($c->first())->explode(',') : $c)
+            ->map(fn (string $field) => [
+                'field' => $field,
+                'label' => $columnLabels[$field] ?? $field,
+                'visible' => true,
+                'sortable' => false,
+            ])
+            ->values()
+            ->all();
+
+        $resource = CommitResource::collection($paginator);
+
+        return response()->json([
+            'data' => $resource->resolve(),
+            'meta' => [
+                'columns' => $columns,
+                'activeFilterBadges' => [],
+                'current_page' => $paginator->currentPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+                'last_page' => $paginator->lastPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+            ],
+        ]);
     }
 
     public function commit(string $hash): Collection

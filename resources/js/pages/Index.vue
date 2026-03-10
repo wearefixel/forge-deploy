@@ -1,6 +1,7 @@
 <script setup>
 import { ref, getCurrentInstance } from "vue";
 import { Head } from "@statamic/cms/inertia";
+import { router } from "@statamic/cms/inertia";
 import {
   Badge,
   Button,
@@ -8,16 +9,12 @@ import {
   Header,
   Heading,
   Listing,
-  ListingPagination,
-  ListingTable,
   Modal,
-  Panel,
-  PanelFooter,
   Subheading,
 } from "@statamic/cms/ui";
 
 const instance = getCurrentInstance();
-const { $axios } = instance.appContext.config.globalProperties;
+const { $axios, $toast } = instance.appContext.config.globalProperties;
 
 const props = defineProps({
   environments: Array,
@@ -43,10 +40,10 @@ function deploy(environment, hash) {
   $axios
     .post(cp_url(`fixel/forge-deploy/deploy/${environment}/${hash}`))
     .then((r) => {
-      this.$toast.success(r.data.message);
+      $toast.success(r.data.message);
     })
     .catch((e) => {
-      this.$toast.error(e.response.data.message);
+      $toast.error(e.response.data.message);
       deploying.value = null;
     })
     .finally(() => {
@@ -63,46 +60,33 @@ function deploy(environment, hash) {
 
     <Listing
       :url="cp_url('fixel/forge-deploy/commits')"
-      :columns="[
-        { field: 'shortHash', label: 'Hash' },
-        { field: 'message', label: 'Message' },
-        { field: 'author', label: 'Author' },
-        { field: 'actions', label: '' },
-      ]"
-      v-slot="{ items }"
+      :sortable="false"
+      :allow-search="false"
+      :allow-presets="false"
+      :allow-customizing-columns="false"
     >
-      <span v-if="!items.length" v-text="__('No results')" />
+      <template #cell-shortHash="{ row, value }">
+        <Heading class="flex items-center gap-2">
+          <code v-text="value" class="px-0.5 rounded-sm" />
 
-      <Panel v-else>
-        <ListingTable>
-          <template #cell-shortHash="{ row, value }">
-            <Heading class="flex items-center gap-2">
-              <code v-text="value" class="px-0.5 rounded-sm" />
-
-              <template v-for="env in Object.keys(last)" :key="env">
-                <Badge
-                  v-if="last[env] && row.hash === last[env].hash"
-                  :text="env"
-                  :title="new Date(last[env].time * 1000).toLocaleString()"
-                  class="capitalize"
-                />
-              </template>
-            </Heading>
-
-            <Subheading>{{ new Date(row.date).toLocaleString() }}</Subheading>
+          <template v-for="env in Object.keys(last)" :key="env">
+            <Badge
+              v-if="last[env] && row.hash === last[env].hash"
+              :text="env"
+              :title="new Date(last[env].time * 1000).toLocaleString()"
+              class="capitalize"
+            />
           </template>
+        </Heading>
 
-          <template #cell-actions="{ row }">
-            <div class="flex justify-end">
-              <Button icon="eye" @click="selectCommit(row.hash)" />
-            </div>
-          </template>
-        </ListingTable>
+        <Subheading>{{ new Date(row.date).toLocaleString() }}</Subheading>
+      </template>
 
-        <PanelFooter>
-          <ListingPagination />
-        </PanelFooter>
-      </Panel>
+      <template #cell-actions="{ row }">
+        <div class="flex justify-end">
+          <Button icon="eye" @click="selectCommit(row.hash)" />
+        </div>
+      </template>
     </Listing>
 
     <Modal :open="selectedCommit !== null" @dismissed="selectedCommit = null">
