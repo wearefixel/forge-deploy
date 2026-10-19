@@ -86,7 +86,15 @@ class Controller extends StatamicController
 
     public function commit(string $hash): Collection
     {
-        return collect($this->git->getCommit($hash)->getDiff()->getFiles())->map(fn (File $file) => [
+        $commit = $this->git->getCommit($hash);
+        $parents = $commit->getParentHashes();
+
+        // gitlib's DiffParser can't handle the per-parent sections diff-tree -m emits for merges.
+        $diff = count($parents) > 1
+            ? $this->git->getDiff($parents[0].'..'.$commit->getHash())
+            : $commit->getDiff();
+
+        return collect($diff->getFiles())->map(fn (File $file) => [
             'name' => $file->getName(),
             'status' => $file->isDelete() ? 'd' : ($file->isCreation() ? 'c' : ($file->isModification() ? 'm' : null)),
         ]);
